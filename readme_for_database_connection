@@ -1,0 +1,71 @@
+Database Setup & Connection Guide 🚀
+This project uses MySQL as the database engine. Follow the steps below to set up your environment and connect the application to the database.
+
+🔧 Prerequisites
+- Install XAMPP (includes MySQL & phpMyAdmin).
+- Install MySQL Connector for your programming language (e.g., mysql-connector-python for Python).
+pip install mysql-connector-python
+
+
+
+🗄️ Database Setup in XAMPP
+- Start Apache and MySQL from the XAMPP Control Panel.
+- Open phpMyAdmin in your browser:
+http://localhost/phpmyadmin
+- Create a new database (e.g., my_project_db).
+
+📑 Create Tables
+Users Table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE,
+    password VARCHAR(255),
+    email VARCHAR(100),
+    created_at DATETIME,
+    last_login DATETIME
+);
+
+
+Predictions Table
+CREATE TABLE predictions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    prediction VARCHAR(50),
+    confidence FLOAT,
+    timestamp DATETIME
+);
+
+
+
+👨‍💻 Create an Admin Account
+Option A — Insert directly using SQL in phpMyAdmin:
+INSERT INTO users (username, email, password, created_at)
+VALUES ('admin', 'admin@example.com', 'admin123', NOW());
+
+
+
+🛠️ Add Extra Column (Favourite Car)
+If you want to store a user’s favourite car:
+ALTER TABLE users ADD fav_car VARCHAR(100) NULL;
+
+
+Update your register page to include an extra field for "Favourite Car".
+
+🔌 Database Connection Example (Python)
+Here’s a sample connection snippet using mysql-connector-python:
+import mysql.connector
+
+# Connect to MySQL
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",          # default XAMPP user
+    password="",          # leave empty unless you set a password
+    database="my_project_db"
+)
+
+cursor = conn.cursor()
+print("✅ Database connection successful!")
+
+
+
+
