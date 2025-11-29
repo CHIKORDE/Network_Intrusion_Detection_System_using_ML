@@ -48,7 +48,7 @@ Binary classification labels (normal/attack)
 
 ⚙️ Installation
 1. Clone the repository
-git clone https://github.com/your-username/NIDS-ML-SVM.git
+git clone https://github.com/CHIKORDE/Network_Intrusion_Detection_System_ML.git
 cd NIDS-ML-SVM
 
 2. Install dependencies
