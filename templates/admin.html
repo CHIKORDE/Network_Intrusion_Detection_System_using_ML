@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NIDS - Admin Panel</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: white;
+      }
+      .admin-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #333;
+      }
+      .admin-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px 20px 0 0;
+        padding: 2rem;
+        text-align: center;
+      }
+      .table-responsive {
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .btn-back {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 10px;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-12">
+          <div class="admin-card">
+            <div class="admin-header">
+              <i class="fas fa-users fa-3x mb-3"></i>
+              <h2 class="mb-0">Admin Panel</h2>
+              <p class="mb-0">User Management Dashboard</p>
+            </div>
+            <div class="card-body p-4">
+              <div
+                class="d-flex justify-content-between align-items-center mb-4"
+              >
+                <h4><i class="fas fa-list me-2"></i>Registered Users</h4>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-back">Back</a>
+
+                  <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+              </div>
+
+              {% if users %}
+              <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>ID</th>
+                      <th>Username</th>
+                      <th>Email</th>
+                      <th>Created At</th>
+                      <th>Last Login</th>
+                    </tr>
+                  </thead>
+   <tbody>
+  {% for user in users %}
+  <tr>
+    <td>{{ user['id'] }}</td>
+    <td>
+      <i class="fas fa-user me-2 text-primary"></i>
+      {{ user['username'] }}
+    </td>
+    <td>
+      <i class="fas fa-envelope me-2 text-info"></i>
+      {{ user['email'] }}
+    </td>
+    <td>
+      <i class="fas fa-calendar me-2 text-success"></i>
+      {{ user['created_at'].strftime('%Y-%m-%d %H:%M') if user['created_at'] else 'N/A' }}
+    </td>
+    <td>
+      <i class="fas fa-clock me-2 text-warning"></i>
+      {{ user['last_login'].strftime('%Y-%m-%d %H:%M') if user['last_login'] else 'Never' }}
+    </td>
+    <td>
+      {% if user['username'].lower() != 'admin' %}
+      <form method="POST" action="{{ url_for('delete_user', user_id=user['id']) }}"
+            onsubmit="return confirm('Are you sure you want to delete this user?');">
+        <button type="submit" class="btn btn-danger btn-sm">
+          <i class="fas fa-trash-alt"></i> Delete
+        </button>
+      </form>
+      {% else %}
+      <span class="text-muted">Admin</span>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+
+                </table>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-md-3">
+                  <div class="card text-center bg-primary text-white">
+                    <div class="card-body">
+                      <h3>{{ users|length }}</h3>
+                      <p class="mb-0">Total Users</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="card text-center bg-success text-white">
+                    <div class="card-body">
+                      <h3>{{ users|selectattr('4')|list|length }}</h3>
+                      <p class="mb-0">Active Users</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="card text-center bg-info text-white">
+                    <div class="card-body">
+                      <h3>{{ users|rejectattr('4')|list|length }}</h3>
+                      <p class="mb-0">New Users</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="card text-center bg-warning text-white">
+                    <div class="card-body">
+                      <h3>MySQL</h3>
+                      <p class="mb-0">Database</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+              <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle fa-2x mb-3"></i>
+                <h5>No users found</h5>
+                <p class="mb-0">No users have registered yet.</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

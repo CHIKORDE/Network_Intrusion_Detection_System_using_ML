@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - NIDS AI</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+        color: white;
+        min-height: 100vh;
+      }
+
+      /* Background animation */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" style="stop-color:%2300ffff;stop-opacity:0.05"/><stop offset="100%" style="stop-color:%2300ffff;stop-opacity:0"/></radialGradient></defs><circle cx="200" cy="200" r="150" fill="url(%23a)"/><circle cx="800" cy="300" r="100" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>')
+          no-repeat center center;
+        background-size: cover;
+        animation: float 20s ease-in-out infinite;
+        z-index: 1;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(180deg);
+        }
+      }
+
+      /* Navbar */
+      .navbar {
+        position: sticky;
+        top: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        padding: 1rem 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .nav-brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #00ffff;
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+      }
+
+      .nav-links a:hover {
+        color: #00ffff;
+      }
+
+      /* Main content */
+      .main-content {
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      /* Cards */
+      .card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        backdrop-filter: blur(15px);
+        padding: 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+      }
+
+      .card-title {
+        font-size: 1.5rem;
+        color: #00ffff;
+        margin-bottom: 1rem;
+      }
+
+      /* Profile header */
+      .profile-header {
+        text-align: center;
+        padding: 2rem;
+      }
+
+      .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #00ffff, #0080ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 50px;
+        margin: 0 auto 1rem;
+      }
+
+      .profile-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .info-item {
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+      }
+
+      .info-label {
+        color: #aaa;
+      }
+      .info-value {
+        color: #00ffff;
+        font-weight: bold;
+      }
+
+      /* Stats */
+      .stat-card {
+        background: rgba(0, 255, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        color: #00ffff;
+        font-weight: bold;
+      }
+
+      /* Prediction table */
+      .predictions-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .predictions-table th,
+      .predictions-table td {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .prediction-badge {
+        padding: 0.3rem 0.7rem;
+        border-radius: 10px;
+        font-weight: bold;
+      }
+
+      .badge-benign {
+        background: rgba(0, 255, 0, 0.2);
+        color: #00ff00;
+      }
+      .badge-malicious {
+        background: rgba(255, 0, 0, 0.2);
+        color: #ff4444;
+      }
+
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 1rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #00ffff, #0080ff);
+        color: white;
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #00ffff;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="{{ url_for('dashboard') }}" class="nav-brand"
+          >🛡️ NIDS Control Center</a
+        >
+        <ul class="nav-links">
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="main-content">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-avatar">👤</div>
+        <h1>{{ username }}</h1>
+        <p>Network Security Analyst</p>
+      </div>
+
+      <!-- Account Information -->
+      <div class="card">
+        <h3 class="card-title">👤 Account Information</h3>
+
+        <div class="profile-info">
+          <div class="info-item">
+            <span class="info-label">Username:</span><br />
+            <span class="info-value">{{ username }}</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Email:</span><br />
+            <span class="info-value">{{ user_data.email }}</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Member Since:</span><br />
+            <span class="info-value">
+              {{ user_data.created_at.strftime('%B %d, %Y') if
+              user_data.created_at else 'N/A' }}
+            </span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Last Login:</span><br />
+            <span class="info-value">
+              {{ user_data.last_login.strftime('%B %d, %Y %I:%M %p') if
+              user_data.last_login else 'N/A' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="card">
+        <h3 class="card-title">📊 Analytics Overview</h3>
+
+        <div class="profile-info">
+          <div class="stat-card">
+            <div class="stat-number">{{ total_predictions }}</div>
+            <div>Total Analyses</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-number">
+              {{ prediction_history.get('BENIGN', 0) }}
+            </div>
+            <div>Benign</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-number">
+              {{ total_predictions - prediction_history.get('BENIGN', 0) }}
+            </div>
+            <div>Threats</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prediction History -->
+      <div class="card">
+        <h3 class="card-title">📈 Recent Analyses</h3>
+
+        {% if recent_predictions %}
+        <table class="predictions-table">
+          <thead>
+            <tr>
+              <th>Date & Time</th>
+              <th>Classification</th>
+              <th>Confidence</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for p in recent_predictions %}
+            <tr>
+              <td>{{ p.timestamp.strftime('%m/%d/%Y %I:%M %p') }}</td>
+              <td>{{ p.prediction }}</td>
+
+              <td>{{ p.confidence }}%</td>
+
+              <td>
+                {% if p.prediction and 'BENIGN' in p.prediction.upper() %}
+                <span class="prediction-badge badge-benign">Safe</span>
+                {% elif p.prediction %}
+
+                <span class="prediction-badge badge-malicious">Threat</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if p.prediction and 'BENIGN' in p.prediction.upper() %}
+                <span class="prediction-badge badge-benign">Safe</span>
+                {% else %}
+                <span class="prediction-badge badge-malicious">Threat</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% else %}
+        <p>No prediction history available.</p>
+        {% endif %}
+      </div>
+
+      <!-- Actions -->
+      <div class="card">
+        <h3 class="card-title">🛠️ Actions</h3>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary"
+          >🔍 New Analysis</a
+        >
+
+        <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+      </div>
+    </div>
+  </body>
+</html>

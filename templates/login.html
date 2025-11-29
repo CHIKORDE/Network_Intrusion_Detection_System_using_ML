@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - NIDS AI</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0a0a0a 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* Animated background */
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" style="stop-color:%2300ffff;stop-opacity:0.1"/><stop offset="100%" style="stop-color:%2300ffff;stop-opacity:0"/></radialGradient></defs><circle cx="200" cy="200" r="150" fill="url(%23a)"/><circle cx="800" cy="300" r="100" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>')
+          no-repeat center center;
+        background-size: cover;
+        animation: float 20s ease-in-out infinite;
+        z-index: 1;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(180deg);
+        }
+      }
+
+      /* Home button */
+      .home-btn {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #00ffff;
+        text-decoration: none;
+        font-size: 1.1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .home-btn:hover {
+        background: rgba(0, 255, 255, 0.1);
+        border-color: #00ffff;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+      }
+
+      .home-btn::before {
+        content: "←";
+        font-size: 1.2rem;
+      }
+
+      /* Login container */
+      .login-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 3rem;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 10;
+        animation: slideIn 0.8s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .login-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(0, 255, 255, 0.1),
+          transparent
+        );
+        border-radius: 20px;
+        z-index: -1;
+        animation: shimmer 3s linear infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .logo {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .logo h1 {
+        font-size: 2.5rem;
+        background: linear-gradient(45deg, #00ffff, #0080ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+      }
+
+      .logo p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #00ffff;
+        font-weight: 500;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 10px;
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #00ffff;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .btn-login {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(45deg, #00ffff, #0080ff);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
+        background: linear-gradient(45deg, #0080ff, #00ffff);
+      }
+
+      .btn-login:active {
+        transform: translateY(0);
+      }
+
+      .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 255, 255, 0.3),
+          transparent
+        );
+      }
+
+      .divider span {
+        background: linear-gradient(
+          135deg,
+          #0a0a0a 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        padding: 0 1rem;
+      }
+
+      .auth-links {
+        text-align: center;
+      }
+
+      .auth-links a {
+        color: #00ffff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .auth-links a:hover {
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+      }
+
+      /* Flash messages */
+      .flash-messages {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2000;
+        max-width: 400px;
+      }
+
+      .flash-message {
+        padding: 1rem 1.5rem;
+        margin-bottom: 0.5rem;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        border: 1px solid;
+        animation: slideInRight 0.5s ease-out;
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .flash-success {
+        background: rgba(0, 255, 0, 0.1);
+        border-color: #00ff00;
+        color: #00ff00;
+      }
+
+      .flash-error {
+        background: rgba(255, 0, 0, 0.1);
+        border-color: #ff0000;
+        color: #ff4444;
+      }
+
+      .flash-info {
+        background: rgba(0, 255, 255, 0.1);
+        border-color: #00ffff;
+        color: #00ffff;
+      }
+
+      .flash-warning {
+        background: rgba(255, 255, 0, 0.1);
+        border-color: #ffff00;
+        color: #ffff00;
+      }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
+        .login-container {
+          margin: 1rem;
+          padding: 2rem;
+        }
+
+        .home-btn {
+          top: 1rem;
+          left: 1rem;
+          padding: 0.5rem 1rem;
+          font-size: 1rem;
+        }
+
+        .logo h1 {
+          font-size: 2rem;
+        }
+      }
+
+      /* Network nodes animation */
+      .network-node {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #00ffff;
+        border-radius: 50%;
+        opacity: 0.6;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.5);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Home Button -->
+    <a href="{{ url_for('home') }}" class="home-btn"> Back to Home </a>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+      <div class="flash-message flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    <!-- Login Form -->
+    <div class="login-container">
+      <div class="logo">
+        <h1>NIDS AI</h1>
+        <p>Secure Login Portal</p>
+      </div>
+
+      <form method="POST">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn-login">Login to Dashboard</button>
+      </form>
+
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <div class="auth-links">
+        <p>
+          Don't have an account?
+          <a href="{{ url_for('register') }}">Sign up here</a>
+        </p>
+      </div>
+      <div class="auth-links">
+        <p><a href="{{ url_for('forgot_password') }}">Forgot Password?</a></p>
+      </div>
+    </div>
+
+    <script>
+      // Create animated network nodes
+      function createNetworkNodes() {
+        const nodeCount = 20;
+        for (let i = 0; i < nodeCount; i++) {
+          const node = document.createElement("div");
+          node.className = "network-node";
+          node.style.left = Math.random() * 100 + "%";
+          node.style.top = Math.random() * 100 + "%";
+          node.style.animationDelay = Math.random() * 2 + "s";
+          document.body.appendChild(node);
+        }
+      }
+
+      // Auto-hide flash messages
+      function hideFlashMessages() {
+        const flashMessages = document.querySelectorAll(".flash-message");
+        flashMessages.forEach((message) => {
+          setTimeout(() => {
+            message.style.animation = "slideInRight 0.5s ease-out reverse";
+            setTimeout(() => {
+              message.remove();
+            }, 500);
+          }, 5000);
+        });
+      }
+
+      // Initialize when DOM is loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        createNetworkNodes();
+        hideFlashMessages();
+
+        // Focus on first input
+        document.getElementById("username").focus();
+      });
+
+      // Add some interactivity
+      document.addEventListener("mousemove", function (e) {
+        if (Math.random() > 0.98) {
+          const particle = document.createElement("div");
+          particle.style.position = "fixed";
+          particle.style.left = e.clientX + "px";
+          particle.style.top = e.clientY + "px";
+          particle.style.width = "2px";
+          particle.style.height = "2px";
+          particle.style.background = "#00ffff";
+          particle.style.borderRadius = "50%";
+          particle.style.pointerEvents = "none";
+          particle.style.zIndex = "9999";
+          particle.style.animation = "pulse 1s ease-out forwards";
+
+          document.body.appendChild(particle);
+
+          setTimeout(() => {
+            particle.remove();
+          }, 1000);
+        }
+      });
+    </script>
+  </body>
+</html>
