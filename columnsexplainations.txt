@@ -1,0 +1,25 @@
+Certainly! Here's a detailed explanation of each of the 10 selected features used for intrusion detection — perfect for your report:
+
+📊 Explanation of Reduced Features for Intrusion Detection
+Feature Name	Meaning / Role in Traffic	Why It Matters for Attack Detection
+1. Flow Duration	Total time (in micro/milliseconds) a connection/flow lasted between two endpoints.	Long or extremely short durations can indicate abnormal sessions (e.g., bot activity, port scanning).
+2. Total Fwd Packets	Total number of packets sent from source to destination (forward direction).	Sudden spikes can indicate a flood or data exfiltration.
+3. Total Backward Packets	Total number of packets sent from destination to source (reverse direction).	Helps compare normal 2-way conversations with suspicious 1-way traffic.
+4. Flow Bytes/s	Average bytes transmitted per second in the flow.	Very high throughput in a short time may suggest DoS/DDoS or brute force attempts.
+5. Flow Packets/s	Average number of packets transmitted per second in the flow.	High packet rates may indicate SYN floods or scan behavior.
+6. Fwd Packet Length Mean	Mean size of packets going in the forward direction.	Consistently large or small packet sizes might indicate tunneling or command/control traffic.
+7. Bwd Packet Length Mean	Mean size of packets in the reverse (response) direction.	Can detect if the server is replying with large data or error codes (e.g., during an exploit).
+8. Fwd IAT Mean	Mean time between packets sent in the forward direction (Inter-Arrival Time).	Low variability or consistent intervals may point to automated tools or malware.
+9. Bwd IAT Mean	Mean time between packets in the reverse direction.	Helps detect response behavior—slow replies may be indicative of resource overload under attack.
+10. SYN Flag Count	Number of TCP packets with the SYN (synchronize) flag set in a session.	High SYN counts are a hallmark of SYN flood attacks (DoS), where sessions are never completed.
+
+🛡️ Summary for Report
+These features were selected for their strong ability to capture abnormal traffic patterns such as:
+
+High volume (DDoS)
+
+Unusual timing (botnets, scanners)
+
+Protocol misuse (SYN floods, tunneling)
+
+Unbalanced communication (data leaks, backdoors)
